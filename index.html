@@ -1,255 +1,177 @@
-<!DOCTYPE html>
-<html lang="sk">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EU Logistics Calculator</title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    background:#000;
-    color:white;
-    font-family:Arial,sans-serif;
-}
-
-header{
-    padding:40px;
-    text-align:center;
-    border-bottom:2px solid #00aaff;
-}
-
-header h1{
-    color:#00aaff;
-}
-
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
-
-.card{
-    background:#111;
-    border:1px solid #333;
-    border-radius:12px;
-    padding:20px;
-    margin-bottom:20px;
-}
-
-h2{
-    color:#00aaff;
-    margin-bottom:15px;
-}
-
-label{
-    display:block;
-    margin-bottom:5px;
-    margin-top:10px;
-    color:white;
-}
-
-input,
-select,
-textarea{
-    width:100%;
-    padding:12px;
-    background:#1b1b1b;
-    color:white;
-    border:1px solid #444;
-    border-radius:6px;
-}
-
-button{
-    width:100%;
-    padding:15px;
-    background:#00aaff;
-    color:white;
-    font-size:18px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#0088cc;
-}
-
-.result{
-    background:#111;
-    border:1px solid #00aaff;
-    border-radius:12px;
-    padding:20px;
-    margin-top:20px;
-}
-
-.price{
-    color:#00ff88;
-    font-size:36px;
-    font-weight:bold;
-}
-
-</style>
-</head>
-
-<body>
-
-<header>
-<h1>EU Logistics</h1>
-<p>Kalkulačka nákladnej dopravy</p>
-</header>
-
-<div class="container">
-
-<div class="card">
-
-<h2>Trasa prepravy</h2>
-
-<label>Krajina odoslania</label>
-<select id="fromCountry">
-<option>Slovensko</option>
-<option>Česko</option>
-<option>Poľsko</option>
-<option>Maďarsko</option>
-<option>Rakúsko</option>
-<option>Nemecko</option>
-<option>Taliansko</option>
-<option>Francúzsko</option>
-<option>Belgicko</option>
-<option>Holandsko</option>
-</select>
-
-<label>Mesto odoslania</label>
-<select id="fromCity">
-<option>Kosice</option>
-<option>Bratislava</option>
-<option>Praha</option>
-<option>Brno</option>
-<option>Vieden</option>
-<option>Budapest</option>
-<option>Berlin</option>
-</select>
-
-<label>Krajina doručenia</label>
-<select id="toCountry">
-<option>Slovensko</option>
-<option>Česko</option>
-<option>Poľsko</option>
-<option>Maďarsko</option>
-<option>Rakúsko</option>
-<option>Nemecko</option>
-<option>Taliansko</option>
-<option>Francúzsko</option>
-<option>Belgicko</option>
-<option>Holandsko</option>
-</select>
-
-<label>Mesto doručenia</label>
-<select id="toCity">
-<option>Bratislava</option>
-<option>Kosice</option>
-<option>Praha</option>
-<option>Brno</option>
-<option>Vieden</option>
-<option>Budapest</option>
-<option>Berlin</option>
-</select>
-
-</div>
-
-<div class="card">
-
-<h2>Informácie o tovare</h2>
-
-<label>Názov tovaru</label>
-<input type="text" id="cargoName">
-
-<label>Kategória tovaru</label>
-<select id="category">
-<option value="1">Štandardný náklad</option>
-<option value="1.2">Krehký náklad</option>
-<option value="1.4">Nebezpečný náklad</option>
-<option value="1.3">Chladený tovar</option>
-</select>
-
-<label>Opis tovaru</label>
-<textarea rows="4"></textarea>
-
-<label>Hmotnosť (kg)</label>
-<input type="number" id="weight">
-
-<label>Dĺžka (cm)</label>
-<input type="number" id="length">
-
-<label>Šírka (cm)</label>
-<input type="number" id="width">
-
-<label>Výška (cm)</label>
-<input type="number" id="height">
-
-<label>Druh dopravy</label>
-<select id="transport">
-
-<option value="0.50">Cestná doprava</option>
-<option value="1.20">Letecká doprava</option>
-<option value="0.40">Železničná doprava</option>
-<option value="0.30">Námorná doprava</option>
-
-</select>
-
-</div>
-
-<button onclick="calculatePrice()">
-Vypočítať cenu dopravy
-</button>
-
-<div id="result"></div>
-
-</div>
-
 <script>
+
+const countryCities = {
+
+"Slovensko":[
+"Bratislava",
+"Kosice",
+"Presov",
+"Zilina",
+"Nitra",
+"Trnava",
+"Banska Bystrica",
+"Poprad"
+],
+
+"Česko":[
+"Praha",
+"Brno",
+"Ostrava",
+"Plzen",
+"Liberec",
+"Olomouc"
+],
+
+"Poľsko":[
+"Warszawa",
+"Krakow",
+"Gdansk",
+"Poznan",
+"Wroclaw"
+],
+
+"Maďarsko":[
+"Budapest",
+"Debrecen",
+"Szeged",
+"Pecs",
+"Gyor"
+],
+
+"Rakúsko":[
+"Vieden",
+"Graz",
+"Linz",
+"Salzburg",
+"Innsbruck"
+],
+
+"Nemecko":[
+"Berlin",
+"Munich",
+"Hamburg",
+"Frankfurt",
+"Koln"
+],
+
+"Taliansko":[
+"Rim",
+"Milano",
+"Neapol",
+"Turin",
+"Bologna"
+],
+
+"Francúzsko":[
+"Pariz",
+"Lyon",
+"Marseille",
+"Toulouse",
+"Nice"
+],
+
+"Belgicko":[
+"Brusel",
+"Antverpy",
+"Gent",
+"Liege"
+],
+
+"Holandsko":[
+"Amsterdam",
+"Rotterdam",
+"Eindhoven",
+"Utrecht"
+]
+
+};
+
+function loadCities(countryId, cityId){
+
+const country =
+document.getElementById(countryId).value;
+
+const citySelect =
+document.getElementById(cityId);
+
+citySelect.innerHTML = "";
+
+countryCities[country].forEach(city => {
+
+const option =
+document.createElement("option");
+
+option.value = city;
+option.textContent = city;
+
+citySelect.appendChild(option);
+
+});
+
+}
+
+document
+.getElementById("fromCountry")
+.addEventListener("change", function(){
+
+loadCities("fromCountry","fromCity");
+
+});
+
+document
+.getElementById("toCountry")
+.addEventListener("change", function(){
+
+loadCities("toCountry","toCity");
+
+});
+
+loadCities("fromCountry","fromCity");
+loadCities("toCountry","toCity");
 
 const routes = {
 
 "Kosice-Bratislava":400,
-"Kosice-Praha":680,
-"Kosice-Brno":580,
-"Kosice-Vieden":500,
-"Kosice-Budapest":260,
-"Kosice-Berlin":900,
+"Kosice-Presov":35,
+"Kosice-Zilina":260,
+"Kosice-Poprad":115,
 
-"Bratislava-Praha":330,
-"Bratislava-Brno":130,
 "Bratislava-Vieden":80,
 "Bratislava-Budapest":200,
-"Bratislava-Berlin":680,
+"Bratislava-Praha":330,
+"Bratislava-Brno":130,
 
 "Praha-Brno":210,
-"Praha-Vieden":330,
-"Praha-Budapest":525,
 "Praha-Berlin":350,
 
-"Brno-Vieden":145,
-"Brno-Budapest":330,
-"Brno-Berlin":550,
+"Berlin-Hamburg":290,
+"Berlin-Frankfurt":550,
+"Berlin-Munich":585,
 
-"Vieden-Budapest":243,
-"Vieden-Berlin":680,
+"Budapest-Vieden":243,
+"Budapest-Debrecen":230,
 
-"Budapest-Berlin":870
+"Vieden-Graz":200,
+"Vieden-Linz":185,
+
+"Amsterdam-Rotterdam":80,
+"Brusel-Amsterdam":210,
+
+"Pariz-Lyon":470,
+"Pariz-Marseille":775,
+
+"Milano-Rim":570,
+"Warszawa-Krakow":300
 
 };
 
 function getDistance(fromCity,toCity){
 
-let route1 = fromCity + "-" + toCity;
-let route2 = toCity + "-" + fromCity;
+const route1 =
+fromCity + "-" + toCity;
+
+const route2 =
+toCity + "-" + fromCity;
 
 if(routes[route1]){
 return routes[route1];
@@ -265,37 +187,37 @@ return 500;
 
 function calculatePrice(){
 
-let fromCity =
+const fromCity =
 document.getElementById("fromCity").value;
 
-let toCity =
+const toCity =
 document.getElementById("toCity").value;
 
-let distance =
+const distance =
 getDistance(fromCity,toCity);
 
-let weight =
+const weight =
 Number(document.getElementById("weight").value);
 
-let length =
+const length =
 Number(document.getElementById("length").value);
 
-let width =
+const width =
 Number(document.getElementById("width").value);
 
-let height =
+const height =
 Number(document.getElementById("height").value);
 
-let transport =
+const transport =
 Number(document.getElementById("transport").value);
 
-let category =
+const category =
 Number(document.getElementById("category").value);
 
-let volume =
+const volume =
 (length * width * height) / 1000000;
 
-let price =
+const price =
 (
 (distance * transport)
 +
@@ -305,7 +227,8 @@ let price =
 )
 *
 category
-+ 50;
++
+50;
 
 document.getElementById("result").innerHTML =
 
@@ -334,6 +257,3 @@ ${price.toFixed(2)} €
 }
 
 </script>
-
-</body>
-</html>
